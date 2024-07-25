@@ -1,11 +1,12 @@
+import json
+import logging
 import re
 import sys
 import time
-import json
 from random import uniform
+
 from .errors import RateLimitExceededError
 
-import logging
 try:  # Python 2.7+
     from logging import NullHandler
 except ImportError:
@@ -80,7 +81,6 @@ def camel_case(snake_str):
         >>> camel_case('foo_bar')
         "fooBar"
     """
-
     components = snake_str.split('_')
     # We capitalize the first letter of each component except the first one
     # with the 'title' method and join them together.

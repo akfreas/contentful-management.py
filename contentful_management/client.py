@@ -1,34 +1,34 @@
-import requests
 import platform
 from re import sub
 
-from .resource_builder import ResourceBuilder
-from .errors import get_error, RateLimitExceededError
-from .utils import ConfigurationException, retry_request
+import requests
 
-from .tags_proxy import TagsProxy
-from .users_proxy import UsersProxy
-from .roles_proxy import RolesProxy
-from .assets_proxy import AssetsProxy
-from .spaces_proxy import SpacesProxy
-from .entries_proxy import EntriesProxy
-from .locales_proxy import LocalesProxy
-from .uploads_proxy import UploadsProxy
 from .api_keys_proxy import ApiKeysProxy
-from .webhooks_proxy import WebhooksProxy
-from .snapshots_proxy import SnapshotsProxy
-from .environments_proxy import EnvironmentsProxy
-from .webhooks_call_proxy import WebhooksCallProxy
-from .ui_extensions_proxy import UIExtensionsProxy
+from .assets_proxy import AssetsProxy
 from .content_types_proxy import ContentTypesProxy
-from .organizations_proxy import OrganizationsProxy
-from .webhooks_health_proxy import WebhooksHealthProxy
-from .preview_api_keys_proxy import PreviewApiKeysProxy
-from .space_memberships_proxy import SpaceMembershipsProxy
 from .editor_interfaces_proxy import EditorInterfacesProxy
-from .space_periodic_usages_proxy import SpacePeriodicUsagesProxy
-from .personal_access_tokens_proxy import PersonalAccessTokensProxy
+from .entries_proxy import EntriesProxy
+from .environments_proxy import EnvironmentsProxy
+from .errors import RateLimitExceededError, get_error
+from .locales_proxy import LocalesProxy
 from .organization_periodic_usages_proxy import OrganizationPeriodicUsagesProxy
+from .organizations_proxy import OrganizationsProxy
+from .personal_access_tokens_proxy import PersonalAccessTokensProxy
+from .preview_api_keys_proxy import PreviewApiKeysProxy
+from .resource_builder import ResourceBuilder
+from .roles_proxy import RolesProxy
+from .snapshots_proxy import SnapshotsProxy
+from .space_memberships_proxy import SpaceMembershipsProxy
+from .space_periodic_usages_proxy import SpacePeriodicUsagesProxy
+from .spaces_proxy import SpacesProxy
+from .tags_proxy import TagsProxy
+from .ui_extensions_proxy import UIExtensionsProxy
+from .uploads_proxy import UploadsProxy
+from .users_proxy import UsersProxy
+from .utils import ConfigurationException, retry_request
+from .webhooks_call_proxy import WebhooksCallProxy
+from .webhooks_health_proxy import WebhooksHealthProxy
+from .webhooks_proxy import WebhooksProxy
 
 try:
     import multijson as json
@@ -698,6 +698,7 @@ class Client(object):
 
         if self._has_proxy():
             kwargs['proxies'] = self._proxy_parameters()
+            kwargs['verify'] = False
 
         request_url = self._url(
             url,

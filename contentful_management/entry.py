@@ -1,7 +1,7 @@
-from .resource import FieldsResource, PublishResource, ArchiveResource, EnvironmentAwareResource, MetadataResource
-from .utils import is_link, is_link_array, snake_case
 from .entry_snapshots_proxy import EntrySnapshotsProxy
-
+from .resource import (ArchiveResource, EnvironmentAwareResource,
+                       FieldsResource, MetadataResource, PublishResource)
+from .utils import is_link, is_link_array, snake_case
 
 """
 contentful_management.entry
@@ -73,7 +73,7 @@ class Entry(MetadataResource, FieldsResource, PublishResource, ArchiveResource, 
 
     def _missing_field_raw_id(self, name):
         for field in self._content_type().fields:
-            if field.id == snake_case(name):
+            if field.id == e:
                 return field._real_id()
 
     def _is_missing_field(self, name):
@@ -88,7 +88,7 @@ class Entry(MetadataResource, FieldsResource, PublishResource, ArchiveResource, 
 
     def _content_type(self):
         if self.__CONTENT_TYPE__ is None:
-            self.__CONTENT_TYPE__ = self.sys['content_type'].resolve(self.sys['space'].id, environment_id=self._environment_id)
+            self.__CONTENT_TYPE__ = self.sys['contentType'].resolve(self.sys['space'].id, environment_id=self._environment_id)
         return self.__CONTENT_TYPE__
 
     def _real_field_id_for(self, field_id):
@@ -99,6 +99,6 @@ class Entry(MetadataResource, FieldsResource, PublishResource, ArchiveResource, 
 
     def __repr__(self):
         return "<Entry[{0}] id='{1}'>".format(
-            self.sys['content_type'].sys.get('id', ''),
+            self.sys['contentType'].sys.get('id', ''),
             self.sys.get('id', '')
         )

@@ -1,6 +1,6 @@
-from .utils import snake_case
 from .content_type_field_types import *  # noqa: F403, F401
 from .content_type_field_validation import ContentTypeFieldValidation
+from .utils import snake_case
 
 """
 contentful_management.content_type_field

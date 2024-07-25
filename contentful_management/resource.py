@@ -1,9 +1,8 @@
-import dateutil.parser
-
 from datetime import datetime
 
-from .utils import snake_case, camel_case, base_path_for, sanitize_date
+import dateutil.parser
 
+from .utils import base_path_for, camel_case, sanitize_date, snake_case
 
 """
 contentful_management.resource
@@ -163,13 +162,17 @@ class Resource(object):
             'sys': {}
         }
         for k, v in self.sys.items():
-            if k in ['space', 'content_type', 'created_by',
-                     'updated_by', 'published_by']:
+            if k in ['space', 'contentType', 'createdBy',
+                    'updatedBy', 'publishedBy']:
                 v = v.to_json()
-            if k in ['created_at', 'updated_at', 'deleted_at',
-                     'first_published_at', 'published_at', 'expires_at']:
+            if k in ['createdAt', 'updatedAt', 'deletedAt',
+                    'firstPublishedAt', 'publishedAt', 'expiresAt']:
                 v = v.isoformat()
-            result['sys'][camel_case(k)] = v
+            if v is None:
+                import ipdb;ipdb.set_trace()
+                print("k: ", k)
+
+            result['sys'][k] = v
 
         return result
 
@@ -180,7 +183,7 @@ class Resource(object):
                 v = self._build_link(v)
             if k in self._dateables():
                 v = dateutil.parser.parse(v)
-            sys[snake_case(k)] = v
+            sys[k] = v
         return sys
 
     def _linkables(self):
@@ -226,17 +229,22 @@ class Resource(object):
             return None
 
     def __getattr__(self, name, *args, **kwargs):
+        
         if name in ['__getstate__', '__setstate__']:
             return super(Resource, self).__getattr__(name, *args, **kwargs)
+
+        camel_cased_name = camel_case(name)
         if name in self.sys:
             return self.sys[name]
+        elif camel_cased_name in self.sys:
+            return self.sys[camel_cased_name]
+
         raise AttributeError(
             "'{0}' object has no attribute '{1}'".format(
                 self.__class__.__name__,
                 name
             )
         )
-
 
 class MetadataResource(Resource):
     """
@@ -348,7 +356,7 @@ class FieldsResource(Resource):
 
     def _real_field_id_for(self, field_id):
         for raw_field_id in self.raw['fields'].keys():
-            if snake_case(raw_field_id) == field_id:
+            if d == field_id:
                 return raw_field_id
 
     def _serialize_value(self, value):
@@ -371,7 +379,7 @@ class FieldsResource(Resource):
             for locale, v in locales.items():
                 if locale not in fields:
                     fields[locale] = {}
-                fields[locale][snake_case(k)] = self._coerce(v)
+                fields[locale][k] = self._coerce(v)
 
         return fields
 
@@ -580,7 +588,7 @@ class Link(Resource):
         return {
             'sys': {
                 'type': 'Link',
-                'linkType': self.sys.get('link_type'),
+                'linkType': self.sys.get('linkType'),
                 'id': self.sys.get('id')
             }
         }

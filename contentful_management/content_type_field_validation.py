@@ -1,5 +1,4 @@
-from .utils import snake_case, camel_case
-
+from .utils import camel_case, snake_case
 
 """
 contentful_management.content_type_field_validation
@@ -23,16 +22,17 @@ class ContentTypeFieldValidation(object):
         self.raw = validation_data
         self._data = {}
         for k, v in validation_data.items():
-            self._data[snake_case(k)] = v
+            self._data[k] = v
 
     def to_json(self):
+
         """
         Returns the JSON Representation of the content type field validation.
         """
 
         result = {}
         for k, v in self._data.items():
-            result[camel_case(k)] = v
+            result[k] = v
         return result
 
     def __getattr__(self, name):
